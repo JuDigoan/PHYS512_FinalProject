@@ -37,7 +37,7 @@ def function(Mass):
     return mse
 
 # Initial guess for the mass of the fifth planet
-initial_mass_guess = 10.0
+initial_mass_guess = 5.0
 
 # Optimize the mass to minimize the Mean Square Difference
 result = minimize(function, initial_mass_guess, method='L-BFGS-B')
