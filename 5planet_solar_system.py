@@ -1,4 +1,6 @@
 #More complex_solar_system.py
+import numpy as np
+import matplotlib.pyplot as plt
 
 from solar_system_3d import SolarSystem, Sun, Planet
 
@@ -38,6 +40,11 @@ planets = (
     )
 )
 
+# Set the 'hidden' flag for the second planet
+#planets[3].hidden = True
+
+
+# Run simulation
 t = 0
 
 while t<=100:
@@ -45,3 +52,7 @@ while t<=100:
     solar_system.update_all()
     solar_system.draw_all()
     t=t+0.5
+
+# Access trajectories after the simulation completes
+planet1_trajectory = np.array([planets[1].trajectory])
+print(planet1_trajectory)
