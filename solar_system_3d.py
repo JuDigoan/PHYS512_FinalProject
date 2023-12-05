@@ -130,11 +130,31 @@ class Planet(SolarSystemBody):
     colours = itertools.cycle([(1, 0, 0), (0, 1, 0), (0, 0, 1)])
 
     def __init__(
-            self,
-            solar_system,
-            mass=10,
-            position=(0, 0, 0),
-            velocity=(0, 0, 0),
+        self,
+        solar_system,
+        mass=10,
+        position=(0, 0, 0),
+        velocity=(0, 0, 0),
     ):
         super(Planet, self).__init__(solar_system, mass, position, velocity)
         self.colour = next(Planet.colours)
+        self.hidden = False  # Adding a flag to indicate if the planet is hidden
+
+    def draw(self):
+        if not self.hidden:  # Check if the planet is hidden
+            self.solar_system.ax.plot(
+                *self.position,
+                marker="o",
+                markersize=self.display_size + self.position[0] / 30,
+                color=self.colour
+            )
+            if self.solar_system.projection_2d:
+                self.solar_system.ax.plot(
+                    self.position[0],
+                    self.position[1],
+                    -self.solar_system.size / 2,
+                    marker="o",
+                    markersize=self.display_size / 2,
+                    color=(.5, .5, .5),
+                )
+
