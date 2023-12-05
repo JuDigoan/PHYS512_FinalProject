@@ -140,6 +140,12 @@ class Planet(SolarSystemBody):
         self.colour = next(Planet.colours)
         self.hidden = False  # Adding a flag to indicate if the planet is hidden
 
+        self.trajectory = []  # Initialize an empty list to store the trajectory
+
+    def move(self):
+        super().move()  # Call the parent class's move method
+        self.trajectory.append(self.position)  # Store the current position in the trajectory
+
     def draw(self):
         if not self.hidden:  # Check if the planet is hidden
             self.solar_system.ax.plot(
