@@ -27,7 +27,7 @@ def function(Mass):
         solar_system.update_all()
         t += 0.5
 
-    # Compute the ean square difference
+    # Compute the mean square difference
     mse = 0.0
     for i in range(4):  # Compare the trajectories of the first four planets
         planet_trajectory = np.array(planets[i].trajectory)
