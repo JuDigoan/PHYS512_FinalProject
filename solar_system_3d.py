@@ -3,7 +3,7 @@
 import itertools
 import math
 import matplotlib.pyplot as plt
-
+from matplotlib import colormaps
 from vectors import Vector
 
 
@@ -127,7 +127,7 @@ class Sun(SolarSystemBody):
 
 
 class Planet(SolarSystemBody):
-    color_map = cm.get_cmap('tab20')  # Choose a colormap: 'vidiris', 'plasma'
+    color_map = colormaps.get_cmap('tab20')  # Choose a colormap: 'vidiris', 'plasma'
 
     def __init__(
         self,

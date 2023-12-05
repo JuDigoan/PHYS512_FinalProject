@@ -31,17 +31,9 @@ planets = (
         mass=15,
         position=(100, -100, 75),
         velocity=(5, 0, 0)
-    ),
-    Planet(
-        solar_system,
-        mass=10,
-        position=(75, -70, 150),
-        velocity=(5, 0, 0)
     )
 )
 
-# Set the 'hidden' flag for the second planet
-planets[4].hidden = True
 
 
 # Run simulation
