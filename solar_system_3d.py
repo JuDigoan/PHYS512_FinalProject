@@ -127,7 +127,7 @@ class Sun(SolarSystemBody):
 
 
 class Planet(SolarSystemBody):
-    colours = itertools.cycle([(1, 0, 0), (0, 1, 0), (0, 0, 1)])
+    color_map = cm.get_cmap('tab20')  # Choose a colormap: 'vidiris', 'plasma'
 
     def __init__(
         self,
@@ -137,9 +137,8 @@ class Planet(SolarSystemBody):
         velocity=(0, 0, 0),
     ):
         super(Planet, self).__init__(solar_system, mass, position, velocity)
-        self.colour = next(Planet.colours)
+        self.colour = self.color_map(len(solar_system.bodies))  # Assign a color based on the number of bodies
         self.hidden = False  # Adding a flag to indicate if the planet is hidden
-
         self.trajectory = []  # Initialize an empty list to store the trajectory
 
     def move(self):
