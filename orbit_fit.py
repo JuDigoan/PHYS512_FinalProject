@@ -74,7 +74,7 @@ def find_missing_planet_mass(accuracy, initial_mass_guess, data_trajectory):
     count = 0 #initialize count variable
     Mass = initial_mass_guess
     error = accuracy+1
-    dM = 2
+    dM = 0.5
     
     while error>=accuracy:
 
@@ -127,7 +127,7 @@ def find_missing_planet_mass(accuracy, initial_mass_guess, data_trajectory):
         model_planet1_trajectory = np.array([planets4[0].trajectory])
 
         # Compute the mean square difference
-        error = error_calculation(data_trajectory, model_planet1_trajectory)
+        new_error = error_calculation(data_trajectory, model_planet1_trajectory)
         
         count += 1
         
@@ -135,24 +135,23 @@ def find_missing_planet_mass(accuracy, initial_mass_guess, data_trajectory):
         
         if errors == []:
             Mass += dM
-        
-        elif error > errors[-1]:
-            if len(errors) == 2 and errors[-1] < errors[-2]:
-                Mass -= dM
-            else:
-                dM = dM * 2
+        else:
+            # Scale dM based on the distance of the error from zero
+            dM *= max(0.1, min(1.0, abs(new_error / accuracy)))
+            # Update Mass based on the direction of the error change
+            if new_error < error:
                 Mass += dM
-            
-        elif error < errors[-1]:
-            dM = dM / 2
-            Mass += dM
-        
+            else:
+                Mass -= dM
+                
+        error = new_error
         errors.append(error)
-
+    
     return Mass, errors, count
 
+    
 # Initial guess for the mass of the fifth planet
-initial_mass_guess = 6
+initial_mass_guess = 8
 accuracy = 1e-6
 results = find_missing_planet_mass(accuracy, initial_mass_guess, data_planet1_trajectory)
 missing_mass = results[0]
