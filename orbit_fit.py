@@ -58,25 +58,26 @@ while t <= 100:
 data_planet1_trajectory = np.array([planets5[0].trajectory])
 
 
-def error_calculation(data_planet1_trajectory, model_planet1_trajectory):
+def error_calculation(data_trajectory, model_trajectory):
     
-    diff_planet1_trajectory = abs(data_planet1_trajectory - model_planet1_trajectory)
+    diff_planet_trajectory = abs(data_trajectory - model_trajectory)
 
     #Calculate square error
-    err_planet1_trajectory = np.sqrt(diff_planet1_trajectory[0][:, 0]**2 + diff_planet1_trajectory[0][:, 1]**2 + diff_planet1_trajectory[0][:, 2]**2)
+    err_planet_trajectory = np.sqrt(diff_planet_trajectory[0][:, 0]**2 + diff_planet_trajectory[0][:, 1]**2 + diff_planet_trajectory[0][:, 2]**2)
 
-    return (np.mean(err_planet1_trajectory))
+    return (np.mean(err_planet_trajectory))
 
 
 # minimize mean square difference
-def find_missing_planet_mass(accuracy, initial_mass_guess, data_planet1_trajectory):
+def find_missing_planet_mass(accuracy, initial_mass_guess, data_trajectory):
     errors = []
     count = 0 #initialize count variable
     Mass = initial_mass_guess
+    error = accuracy+1
+    dM = 2
     
-    def function(Mass):
-        nonlocal count  # Declare count as a nonlocal variable
-        nonlocal errors
+    while error>=accuracy:
+
         # create a solar system with the existing planets and a new one with variable mass
         solar_system4 = SolarSystem(400, projection_2d=True)
         
@@ -126,31 +127,32 @@ def find_missing_planet_mass(accuracy, initial_mass_guess, data_planet1_trajecto
         model_planet1_trajectory = np.array([planets4[0].trajectory])
 
         # Compute the mean square difference
-        error = error_calculation(data_planet1_trajectory, model_planet1_trajectory)
+        error = error_calculation(data_trajectory, model_planet1_trajectory)
         
-        errors.append(error)
         count += 1
         
         print(f"Interation {count}: Mass = {Mass}, MSE = {error}")
-
-        return error
         
-    # Optimize the mass to minimize the Mean Square Difference
-    result = minimize(function, initial_mass_guess, method='L-BFGS-B', tol=accuracy)
-    
-    # Extract the optimized mass
-    optimized_mass = result.x[0]
+        if errors == []:
+            Mass += dM
+        
+        elif error > errors[-1]:
+            if len(errors) == 2 and errors[-1] < errors[-2]:
+                Mass -= dM
+            else:
+                dM = dM * 2
+                Mass += dM
+            
+        elif error < errors[-1]:
+            dM = dM / 2
+            Mass += dM
+        
+        errors.append(error)
 
-    if function(Mass) <= accuracy:
-        return optimized_mass, errors, count
-    
-    else:
-        print("Optimization failed or resulted in an unreasonable mass.")
-        return initial_mass_guess
-    
-    
+    return Mass, errors, count
+
 # Initial guess for the mass of the fifth planet
-initial_mass_guess = 8
+initial_mass_guess = 6
 accuracy = 1e-6
 results = find_missing_planet_mass(accuracy, initial_mass_guess, data_planet1_trajectory)
 missing_mass = results[0]
